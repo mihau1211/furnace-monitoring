@@ -1,26 +1,31 @@
+import { Between } from "typeorm";
+import { format } from "date-fns";
 import { dbSource } from "../../../db/dbSource";
-import { MonitoringData } from "../MonitoringData";
+import { MonitoringData, MonitoringDataInterface } from "../MonitoringData";
 
 export class MonitoringDataService {
     private repository = dbSource.getRepository(MonitoringData);
 
-    async saveMonitoringData(monitoringData: any): Promise<void> {
+    async saveMonitoringData(monitoringData: MonitoringDataInterface): Promise<void> {
         try {
             await this.repository.save(monitoringData);
         } catch (err: any) {
-            throw new Error(`Unable to create new record into table ${err.table}. Message: ${err}`);
+            throw new Error(`Unable to create new record. Message: ${err}`);
         }
     }
 
-    async findMonitoringDataByFurnace(furnace: string): Promise<MonitoringData[]> {
+    async findMonitoringDataByFurnace(furnace: string, from: Date, to: Date): Promise<MonitoringDataInterface[]> {
         try {
-            const monitoringData = await this.repository.findBy({
-                furnace: furnace
+            const monitoringData = await this.repository.find({
+                where: {
+                    furnace: furnace,
+                    timestamp: Between(from, to)
+                }
             })
             
             return monitoringData;
         } catch (err: any) {
-            throw new Error(`Unable to find data in table ${err.table} with provided furnace: ${furnace}. Message: ${err.detail}`);
+            throw new Error(`Unable to find data with provided furnace: ${furnace}. Message: ${err.detail}`);
         }
     }
 }

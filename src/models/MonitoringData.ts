@@ -17,3 +17,11 @@ export class MonitoringData {
     @Column()
     timestamp!: Date;
 }
+
+export interface MonitoringDataInterface {
+    id?: number;
+    furnace: string;
+    temperature: number;
+    humidity: number;
+    timestamp?: Date | number;
+}

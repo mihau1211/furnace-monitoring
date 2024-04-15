@@ -1,6 +1,7 @@
 import express from 'express';
 import { Request, Response } from "express";
 import { MonitoringDataService } from "../models/services/monitoringData.service";
+import { MonitoringDataInterface } from '../models/MonitoringData';
 
 const router = express.Router();
 
@@ -18,9 +19,67 @@ router.post('/monitoringData', async (req: Request, res: Response) => {
     }
 });
 
+router.post('/monitoringData/buffer', async (req: Request, res: Response) => {
+    try {
+        const records: MonitoringDataInterface[] = req.body;
+        for (const record of records) {
+            if (record.timestamp && typeof record.timestamp === 'number') {
+                record.timestamp = new Date(record.timestamp);
+            } else if (!record.timestamp) {
+                record.timestamp = new Date()
+            }
+
+            await monitoringDataService.saveMonitoringData(record);
+        }
+        res.status(201).send('Created');
+    } catch (err: any) {
+        res.status(400).send({ error: err.message });
+    }
+});
+
 router.get('/monitoringData/furnace/:furnace', async (req: Request, res: Response) => {
     try {
-        const monitoringData = await monitoringDataService.findMonitoringDataByFurnace(req.params.furnace);
+        const furnace = req.params.furnace;
+        const { range, from, to } = req.query;
+
+        let startDateFilter = new Date(Number(from));
+        let endDateFilter = new Date(Number(to));
+
+        if (range) {
+            switch (range) {
+                case 'day':
+                    startDateFilter = new Date();
+                    startDateFilter.setHours(0);
+                    startDateFilter.setMinutes(0);
+                    startDateFilter.setSeconds(0);
+                    startDateFilter.setMilliseconds(0);
+
+                    endDateFilter = new Date();
+                    break;
+                case 'week':
+                    startDateFilter = new Date();
+                    startDateFilter.setDate(startDateFilter.getDate() - 6);
+                    startDateFilter.setHours(0);
+                    startDateFilter.setMinutes(0);
+                    startDateFilter.setSeconds(0);
+                    startDateFilter.setMilliseconds(0);
+
+                    endDateFilter = new Date();
+                    break;
+                case 'month':
+                    startDateFilter = new Date();
+                    startDateFilter.setDate(startDateFilter.getDate() - 30);
+                    startDateFilter.setHours(0);
+                    startDateFilter.setMinutes(0);
+                    startDateFilter.setSeconds(0);
+                    startDateFilter.setMilliseconds(0);
+
+                    endDateFilter = new Date();
+                    break;
+            }
+        }
+
+        const monitoringData = await monitoringDataService.findMonitoringDataByFurnace(furnace, startDateFilter, endDateFilter);
         res.status(201).send({ monitoringData });
     } catch (err: any) {
         res.status(404).send({ error: err.message });
