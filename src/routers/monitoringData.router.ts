@@ -37,9 +37,9 @@ router.post('/monitoringData/buffer', async (req: Request, res: Response) => {
     }
 });
 
-router.get('/monitoringData/furnace/:furnace', async (req: Request, res: Response) => {
+router.get('/monitoringData/furnace/:furnaceId', async (req: Request, res: Response) => {
     try {
-        const furnace = req.params.furnace;
+        const furnaceId = Number(req.params.furnaceId);
         const { range, from, to } = req.query;
 
         let startDateFilter = new Date(Number(from));
@@ -79,8 +79,8 @@ router.get('/monitoringData/furnace/:furnace', async (req: Request, res: Respons
             }
         }
 
-        const monitoringData = await monitoringDataService.findMonitoringDataByFurnace(furnace, startDateFilter, endDateFilter);
-        res.status(201).send({ monitoringData });
+        const monitoringData = await monitoringDataService.findMonitoringDataByFurnace(furnaceId, startDateFilter, endDateFilter);
+        res.status(201).send({ data: monitoringData });
     } catch (err: any) {
         res.status(404).send({ error: err.message });
     }

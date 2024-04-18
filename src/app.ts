@@ -1,6 +1,6 @@
 import express from 'express';
 import cors from 'cors';
-import monitoringRouter from './routers/monitoringData';
+import monitoringRouter from './routers/monitoringData.router';
 import { dbSource } from '../db/dbSource';
 
 dbSource

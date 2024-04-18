@@ -1,12 +1,10 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
+import { Furnace } from './Furnace';
 
 @Entity()
 export class MonitoringData {
     @PrimaryGeneratedColumn()
     id!: number;
-
-    @Column()
-    furnace!: string;
 
     @Column('float')
     temperature!: number;
@@ -16,11 +14,15 @@ export class MonitoringData {
 
     @Column()
     timestamp!: Date;
+
+    @ManyToOne(() => Furnace, furnace => furnace.monitoringData)
+    furnace!: Furnace;
 }
 
 export interface MonitoringDataInterface {
     id?: number;
-    furnace: string;
+    furnaceId?: number;
+    furnace?: Furnace;
     temperature: number;
     humidity: number;
     timestamp?: Date | number;
