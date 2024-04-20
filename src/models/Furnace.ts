@@ -1,12 +1,15 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToMany, JoinTable } from 'typeorm';
 import { MonitoringData } from './MonitoringData';
+import { User } from './User';
 
 @Entity()
 export class Furnace {
     @PrimaryGeneratedColumn()
     id!: number;
 
-    @Column()
+    @Column({
+        unique: true
+    })
     name!: string;
 
     @Column('float')
@@ -20,6 +23,10 @@ export class Furnace {
 
     @OneToMany(() => MonitoringData, monitoringData => monitoringData.furnace)
     monitoringData!: MonitoringData[];
+
+    @ManyToMany(() => User)
+    @JoinTable()
+    furnaces!: User[]
 }
 
 export interface FurnaceInterface {

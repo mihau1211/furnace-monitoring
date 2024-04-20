@@ -1,7 +1,5 @@
-import { Between } from "typeorm";
 import { dbSource } from "../../../db/dbSource";
 import { Furnace, FurnaceInterface } from "../Furnace";
-import { MonitoringDataInterface } from "../MonitoringData";
 
 export class FurnaceService {
     private repository = dbSource.getRepository(Furnace);

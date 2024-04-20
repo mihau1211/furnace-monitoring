@@ -9,9 +9,6 @@ export class MonitoringData {
     @Column('float')
     temperature!: number;
 
-    @Column('float')
-    humidity!: number;
-
     @Column()
     timestamp!: Date;
 
@@ -24,6 +21,5 @@ export interface MonitoringDataInterface {
     furnaceId?: number;
     furnace?: Furnace;
     temperature: number;
-    humidity: number;
     timestamp?: Date | number;
 }
