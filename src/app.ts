@@ -3,6 +3,7 @@ import cors from 'cors';
 import monitoringRouter from './routers/monitoringData.router';
 import furnaceRouter from './routers/furnace.router';
 import { dbSource } from '../db/dbSource';
+import mqttClient from './utils/mqttClient';
 
 dbSource
     .initialize()
@@ -20,6 +21,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(apiV1Prefix, monitoringRouter);
-app.use(apiV1Prefix, furnaceRouter)
+app.use(apiV1Prefix, furnaceRouter);
+mqttClient.subscribeToTopic('monitoringData');
 
 export default app;

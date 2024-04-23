@@ -51,27 +51,17 @@ export class MonitoringDataService {
 
             const now = new Date();
             const from = new Date(now.getTime() - minutes * 60000);
-            const nowISOString = now.toISOString();
-            const fromISOString = from.toISOString();
 
             const average = await this.repository
                 .createQueryBuilder('monitoring_data')
-                .select('monitoring_data.temperature')
-                // .select('monitoring_data.temperature')
-                .where('monitoring_data.furnaceId = :furnaceId', { furnaceId: 1 })
-                .andWhere('monitoringData.timestamp BETWEEN :from AND :now', { from: from, now: now })
-                .getMany();
+                .select("AVG(monitoring_data.temperature)", "average_temperature")
+                .where('monitoring_data.furnaceId = :furnaceId', { furnaceId: furnaceId })
+                .andWhere('monitoring_data.timestamp BETWEEN :from AND :now', { from: from, now: now })
+                .getRawMany();
 
-            // const average = await this.repository
-            //     .createQueryBuilder('monitoring_data')
-            //     // .select('monitoring_data.temperature')
-            //     .where('monitoring_data.furnaceId = :furnaceId', { furnaceId: furnaceId })
-            //     .andWhere('monitoring_data.timestamp BETWEEN :from AND :now', { from: from, now: now })
-            //     .getOne();
-
-            // if (!average) {
-            //     throw new Error('Unable to get data.');
-            // }
+            if (!average) {
+                throw new Error('Unable to get data.');
+            }
 
             return {furnace, dateFrom: from, average};
         } catch (err: any) {
