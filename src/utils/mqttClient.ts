@@ -21,7 +21,7 @@ const subscribeToTopic = (topic: string) => {
     });
 };
 
-client.on('message', (topic, message) => {
+client.on('message', async (topic, message) => {
     try {
         const messageStr = message.toString();
         const data = JSON.parse(messageStr);
@@ -31,9 +31,9 @@ client.on('message', (topic, message) => {
             temperature: data.temperature,
             timestamp: data.timestamp
         };
-        monitoringDataService.saveMonitoringData(monitoringData);
+        await monitoringDataService.saveMonitoringData(monitoringData);
     } catch (err) {
-        console.error('Unable to add new record via MQTT. Skipping.');
+        console.log('Unable to add new record via MQTT. Skipping.');
     }
 });
 
