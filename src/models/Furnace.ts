@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToMany, JoinTable } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany, JoinTable, ManyToOne } from 'typeorm';
 import { MonitoringData } from './MonitoringData';
 import { User } from './User';
 
@@ -24,9 +24,8 @@ export class Furnace {
     @OneToMany(() => MonitoringData, monitoringData => monitoringData.furnace)
     monitoringData!: MonitoringData[];
 
-    @ManyToMany(() => User)
-    @JoinTable()
-    furnaces!: User[]
+    @ManyToOne(() => User, user => user.furnace)
+    owner!: User
 }
 
 export interface FurnaceInterface {
@@ -35,5 +34,7 @@ export interface FurnaceInterface {
     minTemp: number;
     maxTemp: number;
     isFanOn?: boolean;
-    monitoringData?: MonitoringData[]
+    monitoringData?: MonitoringData[];
+    owner?: User;
+    ownerId?: number;
 }

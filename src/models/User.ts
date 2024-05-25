@@ -1,6 +1,5 @@
-import { Column, Entity, JoinTable, ManyToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinTable, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Furnace } from "./Furnace";
-
 
 @Entity()
 export class User {
@@ -15,7 +14,12 @@ export class User {
     @Column()
     password!: string
 
-    @ManyToMany(() => Furnace)
-    @JoinTable()
-    furnaces!: Furnace[]
+    @OneToMany(() => Furnace, furnace => furnace.owner)
+    furnace!: Furnace[]
+}
+
+export interface UserInterface {
+    id?: number;
+    imei: string;
+    password: string;
 }
