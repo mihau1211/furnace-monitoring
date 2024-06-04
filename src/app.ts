@@ -24,6 +24,6 @@ app.use(express.json());
 app.use(apiV1Prefix, monitoringRouter);
 app.use(apiV1Prefix, furnaceRouter);
 app.use(apiV1Prefix, userRouter);
-mqttClient.subscribeToTopic('monitoringData');
+// mqttClient.subscribeToTopic('monitoringData');
 
 export default app;

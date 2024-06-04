@@ -38,6 +38,23 @@ router.get('/monitoringData/furnace/:furnaceId', async (req: Request, res: Respo
 
         if (range) {
             switch (range) {
+                case '5min':
+                    startDateFilter = new Date();
+                    startDateFilter.setMinutes(startDateFilter.getMinutes() - 5);
+                    startDateFilter.setSeconds(0);
+                    startDateFilter.setMilliseconds(0);
+
+                    endDateFilter = new Date();
+                    break;
+                case 'hour':
+                    startDateFilter = new Date();
+                    startDateFilter.setHours(startDateFilter.getHours() - 1);
+                    startDateFilter.setMinutes(0);
+                    startDateFilter.setSeconds(0);
+                    startDateFilter.setMilliseconds(0);
+
+                    endDateFilter = new Date();
+                    break;
                 case 'day':
                     startDateFilter = new Date();
                     startDateFilter.setHours(0);
